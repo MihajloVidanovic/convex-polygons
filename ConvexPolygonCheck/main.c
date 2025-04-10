@@ -24,61 +24,82 @@ int main() {
     Vector2Node* polygon = NULL;
     int polygonSize = 0;
 
-    Vector2Node* selectedVertex = polygon;
+    Vector2Node* selectedVertex = NULL;
+    Vector2Node* tmp;
 
     mode m = PlaceVertex;
 
     while (!WindowShouldClose()) {
 
-        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && m == PlaceVertex) {
-            // get the position of the mouse click
-            const int x = GetMouseX(), y = GetMouseY();
-            if (selectedVertex == NULL) {
-                // this is the first vertex of the polygon
-                selectedVertex = (Vector2Node*)malloc(sizeof(Vector2Node));
-                selectedVertex->value.x = (float)x;
-                selectedVertex->value.y = (float)y;
-                // homemade either-side linked list
-                selectedVertex->next = NULL;
-                selectedVertex->prev = NULL;
-                polygon = selectedVertex;
-            }
-            else {
-                // we are adding a new vertex
-                Vector2Node* tmp = selectedVertex->next;
-                selectedVertex->next = (Vector2Node*)malloc(sizeof(Vector2Node));
-                selectedVertex->next->value.x = (float)x;
-                selectedVertex->next->value.y = (float)y;
-                selectedVertex->next->next = NULL;
-                selectedVertex->next->prev = selectedVertex;
-                selectedVertex = selectedVertex->next;
-            }
-            polygonSize++;
-            if (polygonSize == 1) {
-                // if this is the first vertex: the next step is to pick the starting vertex for the next one
-                m = ConnectStartingVertex;
-            }
-            else {
-                // if this is not the first vertex: the next step is to pick the ending vertex for this one
-                m = ConnectEndVertex;
-            }
-        }
-        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && m == ConnectStartingVertex) {
-            const int x = GetMouseX(), y = GetMouseY();
-            for (Vector2Node* i = polygon; i != NULL; i = i->prev) {
-                if (withinCircle((Vector2){(float)x, (float)y}, (Vector2){i->value.x, i->value.y}, 5.0f)) {
-                    selectedVertex = i;
-                    break;
+        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+                if(m == PlaceVertex) {
+                    // get the position of the mouse click
+                    const int x = GetMouseX(), y = GetMouseY();
+                    if (polygonSize == 0) {
+                        // this is the first vertex of the polygon
+                        polygon = (Vector2Node*)malloc(sizeof(Vector2Node));
+                        polygon->value.x = (float)x;
+                        polygon->value.y = (float)y;
+                        // homemade either-side linked list
+                        polygon->next = polygon;
+                        polygon->prev = polygon;
+                    }
+                    else {
+                        // we are adding a new vertex
+                        // make the polygon vertices be in a loop structure
+                        // the assumption is the polygon vertices are already in a loop structure
+                        tmp = selectedVertex->next;
+                        tmp->prev = selectedVertex->next;
+                        selectedVertex->next = (Vector2Node*)malloc(sizeof(Vector2Node));
+                        selectedVertex->next->value.x = (float)x;
+                        selectedVertex->next->value.y = (float)y;
+                        selectedVertex->next->next = tmp;
+                        selectedVertex->next->prev = selectedVertex;
+                        selectedVertex = selectedVertex->next;
+                    }
+                    polygonSize++;
+                    m = ConnectStartingVertex;
+                }
+                else if(m == ConnectStartingVertex) {
+                    const int x = GetMouseX(), y = GetMouseY();
+                    if (withinCircle((Vector2){(float)x, (float)y}, (Vector2){polygon->value.x, polygon->value.y}, 5.0f)) {
+                        selectedVertex = polygon;
+                        m = PlaceVertex;
+                    }
+                    else {
+                        for (Vector2Node* i = polygon->next; i != polygon; i = i->next) {
+                            if (withinCircle((Vector2){(float)x, (float)y}, (Vector2){i->value.x, i->value.y}, 5.0f)) {
+                                selectedVertex = i;
+                                m = PlaceVertex;
+                                break;
+                            }
+                        }
+                    }
                 }
             }
-        }
-        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) && m == ConnectEndVertex) {}
 
         BeginDrawing();
 
             ClearBackground(BLACK);
-
-            for (int i = 0; i < );
+            
+            if(polygonSize > 0) {
+                printf("test\n");
+                if(selectedVertex == polygon) {
+                    DrawCircleV(polygon->value, 5.0f, RED);
+                }
+                else {
+                    DrawCircleV(polygon->value, 5.0f, WHITE);
+                }
+                for (Vector2Node* i = polygon->next; i != polygon; i = i->next) {
+                    if(selectedVertex == polygon) {
+                        DrawCircleV(i->value, 5.0f, RED);
+                    }
+                    else {
+                        DrawCircleV(i->value, 5.0f, WHITE);
+                    }
+                    DrawLineEx(i->prev->value, i->value, 3.0f, WHITE);
+                }
+            }
 
         EndDrawing();
     }
