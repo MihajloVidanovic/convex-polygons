@@ -1,4 +1,4 @@
-# Install script for directory: C:/Users/Mihajlo/CLionProjects/ConvexPolygon
+# Install script for directory: C:/Users/Mihajlo/CLionProjects/convex-polygons/ConvexPolygonCheck
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -39,7 +39,7 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("C:/Users/Mihajlo/CLionProjects/ConvexPolygon/cmake-build-debug/_deps/raylib-build/cmake_install.cmake")
+  include("C:/Users/Mihajlo/CLionProjects/convex-polygons/ConvexPolygonCheck/cmake-build-debug/_deps/raylib-build/cmake_install.cmake")
 
 endif()
 
@@ -58,6 +58,6 @@ endif()
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-  file(WRITE "C:/Users/Mihajlo/CLionProjects/ConvexPolygon/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+  file(WRITE "C:/Users/Mihajlo/CLionProjects/convex-polygons/ConvexPolygonCheck/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
 endif()

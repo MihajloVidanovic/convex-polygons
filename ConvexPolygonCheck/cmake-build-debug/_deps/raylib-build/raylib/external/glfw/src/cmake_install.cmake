@@ -1,4 +1,4 @@
-# Install script for directory: C:/Users/Mihajlo/CLionProjects/ConvexPolygon/cmake-build-debug/_deps/raylib-src/src/external/glfw/src
+# Install script for directory: C:/Users/Mihajlo/CLionProjects/convex-polygons/ConvexPolygonCheck/cmake-build-debug/_deps/raylib-src/src/external/glfw/src
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
