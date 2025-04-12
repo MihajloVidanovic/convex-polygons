@@ -69,7 +69,6 @@ bool IsPolygonConvex(Vector2dNode* polygon, int polygonSize) {
             currAngle = i;
         }
     }
-    polygonSize--;
     if (FindAngle(SubtractVector(currAngle->next->value, currAngle->value)) > FindAngle(SubtractVector(currAngle->prev->value, currAngle->prev->prev->value))) {
         while (--polygonSize) {
             if (FindAngle(SubtractVector(currAngle->prev->value, currAngle->prev->prev->value)) < FindAngle(SubtractVector(currAngle->value, currAngle->prev->value))) {
