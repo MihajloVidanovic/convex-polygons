@@ -12,6 +12,11 @@ typedef struct Vector2Node {
     struct Vector2Node *next, *prev;
 } Vector2Node;
 
+// function to subtract a - b
+Vector2 SubtractVector(const Vector2 a, const Vector2 b) {
+    return (Vector2){a.x - b.x, a.y - b.y};
+}
+
 // simple function to check whether xy is within circle pos, r
 bool WithinCircle(const Vector2 xy, const Vector2 pos, const float r) {
     // pythagorean theorem
@@ -34,10 +39,60 @@ void DeletePolygon(Vector2Node* polygon, int polygonSize) {
     }
 }
 
+float FindAngle(Vector2 vector) {
+    vector.x = vector.x / sqrtf(vector.x * vector.x + vector.y * vector.y);
+    vector.y = vector.y / sqrtf(vector.x * vector.x + vector.y * vector.y);
+    if (vector.y > 0) { // quadrant 1 and 2
+        return atan2f(vector.y, vector.x);
+    }
+    return 2*PI + atan2f(vector.y, vector.x);
+}
+
+bool IsPolygonConvex(const Vector2Node* polygon, int polygonSize) {
+    /* There are many methods to do this, but the method i will use is:
+     * -Go from vertex to vertex
+     * -Find the vector between the two vertices
+     * -Find the angle of this vector
+     * -Compare the angle to the previous two
+     * -If the previous angle is not within the bounds of the current angle and one before the previous one,
+     * that is a cavity and the polygon is concave.
+     * -Repeat polygonSize times. */
+    // Every triangle/line/vertex is convex
+    if (polygonSize <= 3) {
+        return true;
+    }
+    // dumb trick to make clangd ignore that const could be added to the declarations within the while loop,
+    // since adding const makes glitches
+    float angle1 = 0.0f, angle2 = 0.0f, angle3 = 0.0f;
+    while (polygonSize--) {
+        const Vector2 edge1 = SubtractVector(polygon->prev->value, polygon->prev->prev->value);
+        const Vector2 edge2 = SubtractVector(polygon->value, polygon->prev->value);
+        const Vector2 edge3 = SubtractVector(polygon->next->value, polygon->value);
+        // find all the angles of these vectors
+        angle1 = FindAngle(edge1);
+        angle2 = FindAngle(edge2);
+        angle3 = FindAngle(edge3);
+        // well... i can't explain it in a comment without you drawing it out and seeing for yourself :)
+        if (angle1 >= angle3) {
+            if (!(angle2 < angle1) && !(angle2 > angle3)) {
+                return false;
+            }
+        }
+        // and this is just the normal case
+        else {
+            if (angle2 > angle3 || angle2 < angle1) {
+                return false;
+            }
+        }
+        polygon = polygon->next;
+    }
+    return true;
+}
+
 int main() {
 
     // window creation
-    InitWindow(800, 600, "Convex Polygon");
+    InitWindow(800, 600, "Check whether a polygon is convex");
 
     // this is our polygon
     Vector2Node* polygon = NULL;
@@ -189,7 +244,16 @@ int main() {
             }
 
             // UI
-            // TODO
+            DrawText("Use Left Click to place vertices and select them", 0, 0, 20, WHITE);
+            DrawText("Use Right Click to delete vertices", 0, 20, 20, WHITE);
+            DrawText("Use R to reset the polygon", 0, 40, 20, WHITE);
+            DrawText("The current polygon is: ", 0, 60, 20, WHITE);
+            if (IsPolygonConvex(polygon, polygonSize)) {
+                DrawText("Convex", MeasureText("The current polygon is: ", 20), 60, 20, GREEN);
+            }
+            else {
+                DrawText("Concave", MeasureText("The current polygon is: ", 20), 60, 20, RED);
+            }
 
         EndDrawing();
     }
