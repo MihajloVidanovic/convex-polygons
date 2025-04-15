@@ -1,7 +1,7 @@
-prefix=C:/Program Files (x86)/ConvexPolygon
+prefix=C:/Program Files (x86)/example
 exec_prefix=${prefix}
-includedir=C:/Program Files (x86)/ConvexPolygon/include
-libdir=C:/Program Files (x86)/ConvexPolygon/lib
+includedir=C:/Program Files (x86)/example/include
+libdir=C:/Program Files (x86)/example/lib
 
 Name: GLFW
 Description: A multi-platform library for OpenGL, window and input

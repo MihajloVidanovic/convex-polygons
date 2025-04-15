@@ -20,8 +20,8 @@ project(raylib-populate NONE)
 include(ExternalProject)
 ExternalProject_Add(raylib-populate
                      "UPDATE_DISCONNECTED" "False" "DOWNLOAD_EXTRACT_TIMESTAMP" "OFF" "EXTERNALPROJECT_INTERNAL_ARGUMENT_SEPARATOR" "URL" "https://github.com/raysan5/raylib/archive/refs/tags/5.5.tar.gz"
-                    SOURCE_DIR          "C:/Users/Mihajlo/CLionProjects/convex-polygons/ConvexPolygonCheck/cmake-build-debug/_deps/raylib-src"
-                    BINARY_DIR          "C:/Users/Mihajlo/CLionProjects/convex-polygons/ConvexPolygonCheck/cmake-build-debug/_deps/raylib-build"
+                    SOURCE_DIR          "C:/Users/2-razred/Documents/GitHub/convex-polygons/ConvexPolygonCheck/cmake-build-debug/_deps/raylib-src"
+                    BINARY_DIR          "C:/Users/2-razred/Documents/GitHub/convex-polygons/ConvexPolygonCheck/cmake-build-debug/_deps/raylib-build"
                     CONFIGURE_COMMAND   ""
                     BUILD_COMMAND       ""
                     INSTALL_COMMAND     ""

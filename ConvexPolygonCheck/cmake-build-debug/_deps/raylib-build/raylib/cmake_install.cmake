@@ -1,8 +1,8 @@
-# Install script for directory: C:/Users/Mihajlo/CLionProjects/convex-polygons/ConvexPolygonCheck/cmake-build-debug/_deps/raylib-src/src
+# Install script for directory: C:/Users/2-razred/Documents/GitHub/convex-polygons/ConvexPolygonCheck/cmake-build-debug/_deps/raylib-src/src
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/ConvexPolygon")
+  set(CMAKE_INSTALL_PREFIX "C:/Program Files (x86)/example")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -34,36 +34,36 @@ endif()
 
 # Set path to fallback-tool for dependency-resolution.
 if(NOT DEFINED CMAKE_OBJDUMP)
-  set(CMAKE_OBJDUMP "C:/Users/Mihajlo/AppData/Local/Programs/CLion/bin/mingw/bin/objdump.exe")
+  set(CMAKE_OBJDUMP "C:/Users/2-razred/AppData/Local/JetBrains/CLion 2024.3.5/bin/mingw/bin/objdump.exe")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE STATIC_LIBRARY FILES "C:/Users/Mihajlo/CLionProjects/convex-polygons/ConvexPolygonCheck/cmake-build-debug/_deps/raylib-build/raylib/libraylib.a")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib" TYPE STATIC_LIBRARY FILES "C:/Users/2-razred/Documents/GitHub/convex-polygons/ConvexPolygonCheck/cmake-build-debug/_deps/raylib-build/raylib/libraylib.a")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/include" TYPE FILE FILES
-    "C:/Users/Mihajlo/CLionProjects/convex-polygons/ConvexPolygonCheck/cmake-build-debug/_deps/raylib-src/src/raylib.h"
-    "C:/Users/Mihajlo/CLionProjects/convex-polygons/ConvexPolygonCheck/cmake-build-debug/_deps/raylib-src/src/rlgl.h"
-    "C:/Users/Mihajlo/CLionProjects/convex-polygons/ConvexPolygonCheck/cmake-build-debug/_deps/raylib-src/src/raymath.h"
+    "C:/Users/2-razred/Documents/GitHub/convex-polygons/ConvexPolygonCheck/cmake-build-debug/_deps/raylib-src/src/raylib.h"
+    "C:/Users/2-razred/Documents/GitHub/convex-polygons/ConvexPolygonCheck/cmake-build-debug/_deps/raylib-src/src/rlgl.h"
+    "C:/Users/2-razred/Documents/GitHub/convex-polygons/ConvexPolygonCheck/cmake-build-debug/_deps/raylib-src/src/raymath.h"
     )
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "C:/Users/Mihajlo/CLionProjects/convex-polygons/ConvexPolygonCheck/cmake-build-debug/_deps/raylib-build/raylib/raylib.pc")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "C:/Users/2-razred/Documents/GitHub/convex-polygons/ConvexPolygonCheck/cmake-build-debug/_deps/raylib-build/raylib/raylib.pc")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/cmake/raylib" TYPE FILE FILES "C:/Users/Mihajlo/CLionProjects/convex-polygons/ConvexPolygonCheck/cmake-build-debug/_deps/raylib-build/raylib/raylib-config-version.cmake")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/cmake/raylib" TYPE FILE FILES "C:/Users/2-razred/Documents/GitHub/convex-polygons/ConvexPolygonCheck/cmake-build-debug/_deps/raylib-build/raylib/raylib-config-version.cmake")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/cmake/raylib" TYPE FILE FILES "C:/Users/Mihajlo/CLionProjects/convex-polygons/ConvexPolygonCheck/cmake-build-debug/_deps/raylib-src/src/../cmake/raylib-config.cmake")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/cmake/raylib" TYPE FILE FILES "C:/Users/2-razred/Documents/GitHub/convex-polygons/ConvexPolygonCheck/cmake-build-debug/_deps/raylib-src/src/../cmake/raylib-config.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("C:/Users/Mihajlo/CLionProjects/convex-polygons/ConvexPolygonCheck/cmake-build-debug/_deps/raylib-build/raylib/external/glfw/cmake_install.cmake")
+  include("C:/Users/2-razred/Documents/GitHub/convex-polygons/ConvexPolygonCheck/cmake-build-debug/_deps/raylib-build/raylib/external/glfw/cmake_install.cmake")
 
 endif()
 

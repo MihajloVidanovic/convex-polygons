@@ -44,12 +44,16 @@ void DeletePolygon(Vector2dNode* polygon, int polygonSize) {
     }
 }
 
+// a function to find the angle of a vector in radians
 double FindAngle(Vector2d vector) {
+    // normalisation
     vector.x = vector.x / sqrt(vector.x * vector.x + vector.y * vector.y);
     vector.y = vector.y / sqrt(vector.x * vector.x + vector.y * vector.y);
-    if (vector.y > 0) { // quadrant 1 and 2
+    // finding the angle of the normalised vector
+    if (vector.y > 0) { // quadrants 1 and 2
         return atan2(vector.y, vector.x);
     }
+    // quadrants 3 and 4
     return 2.0*PI + atan2(vector.y, vector.x);
 }
 
@@ -213,14 +217,6 @@ int main() {
 
             // drawing the polygon
             if(polygonSize > 0) {
-                // required because the for loop skips over polygon
-                if(polygon != NULL && selectedVertex == polygon) { // because of clangd screaming at me...
-                    // if polygon is selected, draw it red
-                    DrawCircle(polygon->value.x, polygon->value.y, 5.0f, RED);
-                }
-                else if (polygon != NULL) { // because of clangd screaming at me...
-                    DrawCircle(polygon->value.x, polygon->value.y, 5.0f, WHITE);
-                }
                 // draw each vertex and a line connecting them
                 if (polygon != NULL) { // because of clangd screaming at me...
                     // iteration through the polygon
@@ -228,17 +224,24 @@ int main() {
                         if(selectedVertex == i) {
                             // if i is selected, draw it red
                             DrawCircle(i->value.x, i->value.y, 5.0f, RED);
+                            DrawLineEx((Vector2){i->value.x, i->value.y}, (Vector2){i->next->value.x, i->next->value.y}, 3.0f, RED);
                         }
                         else {
                             DrawCircle(i->value.x, i->value.y, 5.0f, WHITE);
+                            DrawLineEx((Vector2){i->value.x, i->value.y}, (Vector2){i->next->value.x, i->next->value.y}, 3.0f, WHITE);
                         }
                         // draw a line between the current vertex and the previous one
-                        DrawLineEx((Vector2){i->prev->value.x, i->prev->value.y}, (Vector2){i->value.x, i->value.y}, 3.0f, WHITE);
                     }
                 }
-                if (polygon != NULL) { // because of clangd screaming at me...
-                    // the final line between polygon->prev and polygon, skipped in for loop
-                    DrawLineEx((Vector2){polygon->prev->value.x, polygon->prev->value.y}, (Vector2){polygon->value.x, polygon->value.y}, 3.0f, WHITE);
+                // required because the for loop skips over polygon
+                if(polygon != NULL && selectedVertex == polygon) { // because of clangd screaming at me...
+                    // if polygon is selected, draw it red
+                    DrawCircle(polygon->value.x, polygon->value.y, 5.0f, RED);
+                    DrawLineEx((Vector2){polygon->value.x, polygon->value.y}, (Vector2){polygon->next->value.x, polygon->next->value.y}, 3.0f, RED);
+                }
+                else if (polygon != NULL) { // because of clangd screaming at me...
+                    DrawCircle(polygon->value.x, polygon->value.y, 5.0f, WHITE);
+                    DrawLineEx((Vector2){polygon->value.x, polygon->value.y}, (Vector2){polygon->next->value.x, polygon->next->value.y}, 3.0f, WHITE);
                 }
             }
 
