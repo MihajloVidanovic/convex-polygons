@@ -8,6 +8,10 @@ typedef struct PolygonNode {
     struct PolygonNode *next, *prev;
 } PolygonNode;
 
+typedef struct Triangle {
+    Vector2 v1, v2, v3;
+} Triangle;
+
 Vector2 GetVectorFromString(const char* str) {
     Vector2 vector = (Vector2){0.0f, 0.0f};
     int i;
@@ -32,6 +36,23 @@ Vector2 GetVectorFromString(const char* str) {
     return vector;
 }
 
+void AddVertexToPolygon(PolygonNode** polygon, size_t* polygonSize, const Vector2 vertex) {
+    if (*polygonSize == 0) {
+        *polygon = (PolygonNode*)malloc(sizeof(PolygonNode));
+        (*polygon)->next = *polygon;
+        (*polygon)->prev = *polygon;
+        (*polygon)->value = vertex;
+    } else if (*polygon != NULL) {
+        (*polygon)->next->prev = (PolygonNode*)malloc(sizeof(PolygonNode));
+        (*polygon)->next->prev->next = (*polygon)->next;
+        (*polygon)->next->prev->prev = *polygon;
+        (*polygon)->next = (*polygon)->next->prev;
+        (*polygon)->next->value = vertex;
+        *polygon = (*polygon)->next;
+    }
+    (*polygonSize)++;
+}
+
 void DeletePolygon(PolygonNode** polygon, size_t* polygonSize) {
     if(*polygonSize > 0 && *polygon != NULL) {
         for(PolygonNode* i = (*polygon)->next; i != *polygon; ) {
@@ -45,12 +66,36 @@ void DeletePolygon(PolygonNode** polygon, size_t* polygonSize) {
     *polygon = NULL;
 }
 
+void MakeTrianglesFromConcave(const PolygonNode* polygon, const size_t polygonSize, Triangle** returnTriangles, size_t* trianglesSize) {
+    *returnTriangles = (Triangle*)malloc(sizeof(Triangle) * polygonSize);
+    PolygonNode *a = polygon, *b = polygon->prev;
+    for(int i = 0; b != a->next; i++, a = a->next) {
+        (*returnTriangles)[i] = (Triangle){a->value, a->next->value, b->value};
+        (*trianglesSize)++;
+    }
+}
+
+void MakeConvexPolygonsFromConcave(PolygonNode* polygon, size_t polygonSize, PolygonNode** returnPolygons) {
+    // d = (x - x1)(y2 - y1) - (y - y1)(x2 - x1)
+    // x, y = vertex
+    // x1, y1 -> x2, y2 = edge
+    // https://math.stackexchange.com/questions/274712/calculate-on-which-side-of-a-straight-line-is-a-given-point-located
+    // big thanks
+    
+}
+
 int main() {
     PolygonNode* polygon = NULL;
     size_t polygonSize = 0;
 
     char str[50]; // not as if somebody's gonna use the whole 50... and if they do, well good on you...
     str[0] = '\0';
+
+    Triangle* triangles = NULL;
+    size_t trianglesSize = 0;
+
+    Color colorArray[21] = {DARKGRAY, GRAY, LIGHTGRAY, MAROON, RED, PINK, ORANGE, GOLD, YELLOW, DARKGREEN, LIME, GREEN,
+                            DARKBLUE, BLUE, SKYBLUE, DARKPURPLE, VIOLET, PURPLE, DARKBROWN, BROWN, BEIGE};
 
     InitWindow(800, 600, "Create Convex Polygons from a Concave polygon");
 
@@ -76,20 +121,7 @@ int main() {
         }
         if(IsKeyPressed(KEY_ENTER)) {
             if(GetVectorFromString(str).x != -1.0f) {
-                if (polygonSize == 0) {
-                    polygon = (PolygonNode*)malloc(sizeof(PolygonNode));
-                    polygon->next = polygon;
-                    polygon->prev = polygon;
-                    polygon->value = GetVectorFromString(str);
-                } else if (polygon != NULL) {
-                    polygon->next->prev = (PolygonNode*)malloc(sizeof(PolygonNode));
-                    polygon->next->prev->next = polygon->next;
-                    polygon->next->prev->prev = polygon;
-                    polygon->next = polygon->next->prev;
-                    polygon->next->value = GetVectorFromString(str);
-                    polygon = polygon->next;
-                }
-                polygonSize++;
+                AddVertexToPolygon(&polygon, &polygonSize, GetVectorFromString(str));
             }
             str[0] = '\0';
         }
@@ -104,13 +136,25 @@ int main() {
         if(IsKeyPressed(KEY_R)) {
             DeletePolygon(&polygon, &polygonSize);
         }
+        if(IsKeyPressed(KEY_T)) {
+            MakeTrianglesFromConcave(polygon, polygonSize, &triangles, &trianglesSize);
+        }
 
         BeginDrawing();
 
             ClearBackground(BLACK);
+
+            if(trianglesSize > 0 && triangles != NULL) {
+                for(int i = 0; i < trianglesSize; i++) {
+                    DrawTriangle(triangles[i].v1, triangles[i].v2, triangles[i].v3, colorArray[i % 21]);
+                    DrawTriangle(triangles[i].v2, triangles[i].v3, triangles[i].v1, colorArray[i % 21]);
+                    DrawTriangle(triangles[i].v3, triangles[i].v1, triangles[i].v2, colorArray[i % 21]);
+                }
+            }
+
             DrawText("To delete the newest vertex press B", 0, 0, 20, WHITE);
             DrawText("To delete the whole polygon press R", 0, 20, 20, WHITE);
-            DrawText("To place the vertex press Enter", 0, 60, 20, WHITE);
+            DrawText("To place the vertex press Enter", 0, 40, 20, WHITE);
             DrawText("Enter vertex coordinates: ", 0, 60, 20, WHITE);
             DrawText(str, MeasureText("Enter vertex coordinates: ", 20), 60, 20, WHITE);
 
@@ -133,6 +177,8 @@ int main() {
 
         EndDrawing();
     }
+
+    free(triangles);
 
     DeletePolygon(&polygon, &polygonSize);
 
