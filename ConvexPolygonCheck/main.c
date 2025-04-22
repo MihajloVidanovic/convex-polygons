@@ -67,25 +67,35 @@ bool IsPolygonConvex(Vector2dNode* polygon, int polygonSize) {
     if (polygonSize <= 3) {
         return true;
     }
+    
+    // The smallest angle is found and stored in currAngle
     Vector2dNode *currAngle = polygon;
     for (Vector2dNode* i = polygon->next; i != polygon; i = i->next) {
         if (FindAngle(SubtractVector(i->value, i->prev->value)) < FindAngle(SubtractVector(currAngle->value, currAngle->prev->value))) {
             currAngle = i;
         }
     }
+    
+    // The next angle could be currAngle->next or currAngle->prev, so we find out which one it is
+    // The next angle is currAngle->prev
     if (FindAngle(SubtractVector(currAngle->next->value, currAngle->value)) > FindAngle(SubtractVector(currAngle->prev->value, currAngle->prev->prev->value))) {
         while (--polygonSize) {
+            // If the angle is smaller, the polygon is concave
             if (FindAngle(SubtractVector(currAngle->prev->value, currAngle->prev->prev->value)) < FindAngle(SubtractVector(currAngle->value, currAngle->prev->value))) {
                 return false;
             }
+            // Go to the next edge
             currAngle = currAngle->prev;
         }
     }
+    // The next angle is currAngle->next
     else {
         while (--polygonSize) {
+            // If the angle is smaller, the polygon is concave
             if (FindAngle(SubtractVector(currAngle->next->value, currAngle->value)) < FindAngle(SubtractVector(currAngle->value, currAngle->prev->value))) {
                 return false;
             }
+            // Go to the next edge
             currAngle = currAngle->next;
         }
     }

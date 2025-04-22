@@ -19,19 +19,19 @@ double VectorAngle(Vector2d vec) {
 
 int ComparisonByX(const void * a, const void * b)
 {
-    const Vector2d aInt = *(Vector2d*)a, bInt = *(Vector2d*)b;
-    if (aInt.x > bInt.x) return 1;
+    const Vector2d aValue = *(Vector2d*)a, bValue = *(Vector2d*)b;
+    if (aValue.x > bValue.x) return 1;
     return -1;
 } // Code taken from StackOverflow, thanks rerun
 
 int ComparisonByY(const void * a, const void * b)
 {
-    const Vector2d aInt = *(Vector2d*)a, bInt = *(Vector2d*)b;
-    if (aInt.y > bInt.y) return 1;
+    const Vector2d aValue = *(Vector2d*)a, bValue = *(Vector2d*)b;
+    if (aValue.y > bValue.y) return 1;
     return -1;
 }
 
-int VectorAngleComparison(const void * a, const void * b) {
+int ComparisonByAngle(const void * a, const void * b) {
     const Vector2d aValue = *(Vector2d*)a;
     const Vector2d bValue = *(Vector2d*)b;
     if (VectorAngle(aValue) < VectorAngle(bValue)) {
@@ -58,9 +58,10 @@ void GeneratePolygon(Vector2d** polygon, int* polygonSize, int requestedSize, Re
     Vector2d vertices[requestedSize];
     Vector2d xvectors1[requestedSize], xvectors2[requestedSize];
     Vector2d yvectors1[requestedSize], yvectors2[requestedSize];
-    Vector2d *polygon;
+    Vector2d vectors[requestedSize];
     double minX, maxX;
     double minY, maxY;
+    Vector2d *x1, *x2, *y1, *y2;
 
     for (int i = 0; i < requestedSize; i++) {
         vertices[i].x = rand() % bounds.width;
@@ -71,47 +72,93 @@ void GeneratePolygon(Vector2d** polygon, int* polygonSize, int requestedSize, Re
     qsort(&vertices[0], requestedSize, sizeof(Vector2d), ComparisonByX);
     minX = vertices[0].x;
     maxX = vertices[requestedSize - 1].x;
-    xvectors1[0] = (Vector2d){minX, 0.0f}, xvectors2[0] = (Vector2d){minX, 0.0f};
-    Vector2d *x1 = &xvectors1[1], *x2 = &xvectors2[1];
+    xvectors1[0] = (Vector2d){minX, 0.0}, xvectors2[0] = (Vector2d){minX, 0.0};
+    x1 = &xvectors1[1], x2 = &xvectors2[1];
     for (int i = 1; i < requestedSize - 1; i++) {
         if (rand() % 2 == 1) {
-            *x1++ = (Vector2d){vertices[i].x, 0.0f};
+            *x1++ = (Vector2d){vertices[i].x, 0.0};
         }
         else {
-            *x2++ = (Vector2d){vertices[i].x, 0.0f};
+            *x2++ = (Vector2d){vertices[i].x, 0.0};
         }
     }
-    *x1 = (Vector2d){maxX, 0.0f}, *x2 = (Vector2d){maxX, 0.0f};
+    *x1 = (Vector2d){maxX, 0.0}, *x2 = (Vector2d){maxX, 0.0};
     for (Vector2d* i = &xvectors1[0]; i < x1; i++) {
-        *i = (Vector2d){(i + 1)->x - i->x, 0.0f};
+        *i = (Vector2d){(i + 1)->x - i->x, 0.0};
     }
     for (Vector2d* i = &xvectors2[0]; i < x2; i++) {
-        *i = (Vector2d){(i + 1)->x - i->x, 0.0f};
+        *i = (Vector2d){i->x - (i + 1)->x, 0.0};
     }
 
     // y section
     qsort(&vertices[0], requestedSize, sizeof(Vector2d), ComparisonByY);
     minY = vertices[0].y, maxY = vertices[requestedSize - 1].y;
-    yvectors1[0] = (Vector2d){0.0f, minY}, yvectors2[0] = (Vector2d){0.0f, minY};
-    Vector2d *y1 = &yvectors1[1], *y2 = &yvectors2[1];
+    yvectors1[0] = (Vector2d){0.0, minY}, yvectors2[0] = (Vector2d){0.0, minY};
+    y1 = &yvectors1[1], y2 = &yvectors2[1];
     for (int i = 1; i < requestedSize - 1; i++) {
         if (rand() % 2 == 1) {
-            *y1++ = (Vector2d){vertices[i].y, 0.0f};
+            *y1++ = (Vector2d){0.0, vertices[i].y};
         }
         else {
-            *y2++ = (Vector2d){vertices[i].y, 0.0f};
+            *y2++ = (Vector2d){0.0, vertices[i].y};
         }
     }
-    *y1 = (Vector2d){maxY, 0.0f}, *y2 = (Vector2d){maxY, 0.0f};
+    *y1 = (Vector2d){0.0, maxY}, *y2 = (Vector2d){0.0, maxY};
     for (Vector2d* i = &yvectors1[0]; i < y1; i++) {
-        *i = (Vector2d){(i + 1)->y - i->y, 0.0f};
+        *i = (Vector2d){0.0, (i + 1)->y - i->y};
     }
     for (Vector2d* i = &yvectors2[0]; i < y2; i++) {
-        *i = (Vector2d){(i + 1)->y - i->y, 0.0f};
+        *i = (Vector2d){0.0, i->y - (i + 1)->y};
     }
 
     // combine
-
+    Vector2d *cx1 = &xvectors1[0], *cx2 = &xvectors2[0], *cv = &vectors[0];
+    // combine x1 x2 with y1
+    for(Vector2d *i = &yvectors1[0]; i < y1; i++) {
+        if(cx1 == x1) {
+            *cv = AddVectors(*cx2++, *i);
+            continue;
+        }
+        if(cx2 == x2) {
+            *cv = AddVectors(*cx1++, *i);
+            continue;
+        }
+        if(rand() % 2 == 1) {
+            *cv = AddVectors(*cx1++, *i);
+        }
+        else {
+            *cv = AddVectors(*cx2++, *i);
+        }
+    }
+    // combine x1 x2 with y2
+    for(Vector2d *i = &yvectors2[0]; i < y2; i++) {
+        if(cx1 == x1) {
+            *cv = AddVectors(*cx2++, *i);
+            continue;
+        }
+        if(cx2 == x2) {
+            *cv = AddVectors(*cx1++, *i);
+            continue;
+        }
+        if(rand() % 2 == 1) {
+            *cv = AddVectors(*cx1++, *i);
+        }
+        else {
+            *cv = AddVectors(*cx2++, *i);
+        }
+    }
+    
+    // sort
+    qsort(&vectors[0], requestedSize, sizeof(Vector2d), ComparisonByAngle);
+    
+    // memory allocation
+    if(*polygonSize > 0) {
+        free(*polygon);
+    }
+    *polygon = malloc(sizeof(Vector2d) * requestedSize);
+    
+    // make the polygon
+    
 }
 
 int main() {
