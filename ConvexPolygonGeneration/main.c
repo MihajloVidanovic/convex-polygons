@@ -75,11 +75,6 @@ void GeneratePolygon(Vector2d** polygon, int* polygonSize, int requestedSize, Re
         vertices[i].x = rand() % (int)bounds.width;
         vertices[i].y = rand() % (int)bounds.height;
     }
-    
-    for(int i = 0; i < requestedSize; i++) {
-        printf("%lf %lf\n", vertices[i].x, vertices[i].y);
-    }
-    printf("\n");
 
     // x section
     qsort(&vertices[0], requestedSize, sizeof(Vector2d), ComparisonByX);
@@ -96,17 +91,8 @@ void GeneratePolygon(Vector2d** polygon, int* polygonSize, int requestedSize, Re
         }
     }
     *x1 = (Vector2d){maxX, 0.0}, *x2 = (Vector2d){maxX, 0.0};
-    for(int i = 0; i < requestedSize; i++) {
-        printf("%lf %lf\n", xvectors1[i].x, xvectors1[i].y);
-    }
-    printf("\n");
-    for(int i = 0; i < requestedSize; i++) {
-        printf("%lf %lf\n", xvectors2[i].x, xvectors2[i].y);
-    }
-    printf("\n");
     for (Vector2d* i = &xvectors1[0]; i < x1; i++) {
         *i = (Vector2d){(i + 1)->x - i->x, 0.0};
-        printf("%lf %lf %lf\n", (i+1)->x - i->x, (i+1)->x, i->x);
     }
     for (Vector2d* i = &xvectors2[0]; i < x2; i++) {
         *i = (Vector2d){i->x - (i + 1)->x, 0.0};
@@ -138,56 +124,36 @@ void GeneratePolygon(Vector2d** polygon, int* polygonSize, int requestedSize, Re
     // combine x1 x2 with y1
     for(Vector2d *i = &yvectors1[0]; i < y1; i++) {
         if(cx1 == x1) {
-            *cv = AddVectors(*cx2++, *i);
-            continue;
+            *cv++ = AddVectors(*cx2++, *i);
         }
-        if(cx2 == x2) {
-            *cv = AddVectors(*cx1++, *i);
-            continue;
+        else if(cx2 == x2) {
+            *cv++ = AddVectors(*cx1++, *i);
         }
-        if(rand() % 2 == 1) {
-            *cv = AddVectors(*cx1++, *i);
+        else if(rand() % 2 == 1) {
+            *cv++ = AddVectors(*cx1++, *i);
         }
         else {
-            *cv = AddVectors(*cx2++, *i);
+            *cv++ = AddVectors(*cx2++, *i);
         }
     }
     // combine x1 x2 with y2
     for(Vector2d *i = &yvectors2[0]; i < y2; i++) {
         if(cx1 == x1) {
-            *cv = AddVectors(*cx2++, *i);
-            continue;
+            *cv++ = AddVectors(*cx2++, *i);
         }
-        if(cx2 == x2) {
-            *cv = AddVectors(*cx1++, *i);
-            continue;
+        else if(cx2 == x2) {
+            *cv++ = AddVectors(*cx1++, *i);
         }
-        if(rand() % 2 == 1) {
-            *cv = AddVectors(*cx1++, *i);
+        else if(rand() % 2 == 1) {
+            *cv++ = AddVectors(*cx1++, *i);
         }
         else {
-            *cv = AddVectors(*cx2++, *i);
+            *cv++ = AddVectors(*cx2++, *i);
         }
     }
     
     // sort
     qsort(&vectors[0], requestedSize, sizeof(Vector2d), ComparisonByAngle);
-    
-    for(int i = 0; i < requestedSize; i++) {
-        printf("%lf %lf\n", xvectors1[i].x, xvectors1[i].y);
-    }
-    printf("\n");
-    for(int i = 0; i < requestedSize; i++) {
-        printf("%lf %lf\n", xvectors2[i].x, xvectors2[i].y);
-    }
-    printf("\n");
-    for(int i = 0; i < requestedSize; i++) {
-        printf("%lf %lf\n", yvectors1[i].x, yvectors1[i].y);
-    }
-    printf("\n");
-    for(int i = 0; i < requestedSize; i++) {
-        printf("%lf %lf\n", yvectors2[i].x, yvectors2[i].y);
-    }
     
     // memory allocation
     if(*polygonSize > 0) {
@@ -196,7 +162,12 @@ void GeneratePolygon(Vector2d** polygon, int* polygonSize, int requestedSize, Re
     *polygon = (Vector2d*)malloc(sizeof(Vector2d) * requestedSize);
     
     // make the polygon
-    
+    **polygon = (Vector2d){0.0, 0.0};
+    for (int i = 1; i < requestedSize; i++) {
+        (*polygon + i)->x = (*polygon + i - 1)->x + vectors[i - 1].x;
+        (*polygon + i)->y = (*polygon + i - 1)->y + vectors[i - 1].y;
+        printf("%lf %lf\n", (*polygon + i)->x, (*polygon + i)->y);
+    }
 }
 
 int main() {
